@@ -20,7 +20,7 @@ timezone: Europe/Paris
 
 title: MorganLG Write-ups # the main title
 
-tagline: Write-ups for random CTFs, challenges, and everything I make time for # it will display as the sub-title
+tagline: Write-ups for random CTFs, challenges, and everything I struggle to make time for # it will display as the sub-title
 
 description: # used by seo meta and the atom feed
 
@@ -32,7 +32,7 @@ github:
   username: MorganLG # change to your github username
 
 twitter:
-  username: twitter_username # change to your twitter username
+  username: # change to your twitter username
 
 social:
   # Change to your full name.
