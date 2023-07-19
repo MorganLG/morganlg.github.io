@@ -59,7 +59,7 @@ $ vol -f MemoryDump.mem windows.netscan
 
 There are a few TCP connections to distant 443 ports, but the relevant ones seem to be those initiated by the *tun2socks.exe* process. Tun2Socks is a networking tool allowing its user to "proxi-fy" or tunnel any outbound connection.
 
-By using the same command as for the Q2, we can easily get it's parent process name.
+By using the same command as for the Q2, we can easily get its parent process name.
 ```shell
 $ vol -f MemoryDump.mem windows.pstree
 ```
@@ -79,7 +79,7 @@ $ vol -f MemoryDump.mem windows.netscan
 
 The command shows that there were an outbound HTTP connection (port 80) initiated by the program *oneetx.exe*. A quick Google Search confirms that this IP address is known to be malicious.
 
-Answer -> __77.91.124[.]20__
+Answer > __77.91.124[.]20__
 
 # Q6 : Based on the previous artifacts. What is the name of the malware family?
 
