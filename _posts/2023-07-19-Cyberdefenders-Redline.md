@@ -33,9 +33,9 @@ PID     PPID    ImageFileName   Offset(V)       Threads Handles SessionId       
 8920    3580    FTK Imager.exe  0xad818ef81080  20      -       1       False   2023-05-21 23:02:28.000000      N/A     Disabled
 5480    448     oneetx.exe      0xad818d3d6080  6       -       1       True    2023-05-21 23:03:00.000000      N/A     Disabled
 ```
-Most of the processes are native Windows programs that don't seem suspicious. The last one (*oneetx.exe*)catches our attention. With a quick Google Search, it turns out that it is indeed malicious.
+Most of the processes are native Windows programs that don't seem suspicious. The last one (*oneetx.exe*) catches our attention. With a quick Google Search, it turns out that it is indeed malicious.
 
-Answer -> __oneetx.exe__
+Answer > __oneetx.exe__
 
 # Q2 : What is the child process name of the suspicious process?
 
@@ -59,7 +59,7 @@ PID     PPID    ImageFileName   Offset(V)       Threads Handles SessionId       
 ```
 The malicious process *oneetx.exe* launched a *rundll32.exe* process which means that it (presumably) executed some of its own library.
 
-Answer -> __rundll32.exe__
+Answer > __rundll32.exe__
 
 # Q3 : What is the memory protection applied to the suspicious process memory region?
 
@@ -90,7 +90,7 @@ b8 00 00 00 00 00 00 00 ........
 ```
 The process named *oneetx.exe* has unusual rights. We can see the *PAGE_EXECUTE_READWRITE* being set which is a suspicious right (akin to 777). With both "Write" and "Execute", a program is able to run code that alters itself.
 
-Answer -> __PAGE_EXECUTE_READWRITE__
+Answer > __PAGE_EXECUTE_READWRITE__
 
 # Q4 : What is the name of the process responsible for the VPN connection?
 
@@ -131,7 +131,7 @@ PID     PPID    ImageFileName   Offset(V)       Threads Handles SessionId       
 ```
 *winlogon.exe* is launched during user authentication and runs Windows Desktop *explorer.exe*. All user programs are then its child processes. The process responsible for running the VPN connection is *Outline.exe*.
 
-Answer -> __Outline.exe__
+Answer > __Outline.exe__
 
 # Q5 : What is the attacker's IP address?
 
@@ -153,7 +153,7 @@ Answer -> __77.91.124[.]20__
 
 With the name of the malicious program and the IP address of the attacker, we can quickly find reports from [any.run](https://any.run/report/fbe652fd97a26061c5e6b68468ecf653f7038d1e976bb657ff81117dcb5ecb85/c6f39f4c-07fc-43b0-b8ec-b25ada62aba7) and [Abuse.ch](https://bazaar.abuse.ch/sample/74b102111f7d344a2c0cb7a77d73c968aff7f6a4b67c3457643d9a61c12d2aef/) that reveals that this malware is from the *RedLine Stealer* family. These malware has been discovered in 2020 and is a Trojan used to steal data such as passwords or crypto wallets.
 
-Answer -> __RedLine Stealer__
+Answer > __RedLine Stealer__
 
 # Q7 : What is the full URL of the PHP file that the attacker visited?
 
@@ -170,7 +170,7 @@ http[:]//77.91.124[.]20/store/games/index.php
 http[:]//77.91.124[.]20/store/games/index.php
 ```
 
-Answer -> __http[:]//77.91.124[.]20/store/games/index.php__
+Answer > __http[:]//77.91.124[.]20/store/games/index.php__
 
 # Q8 : What is the full path of the malicious executable?
 
@@ -182,7 +182,7 @@ $ vol -f MemoryDump.mem windows.filescan | grep oneetx
 0xad818da36c30  \Users\Tammam\AppData\Local\Temp\c3912af058\oneetx.exe  216
 0xad818ef1a0b0  \Users\Tammam\AppData\Local\Temp\c3912af058\oneetx.exe  216
 ```
-Answer -> __C:\Users\Tammam\AppData\Local\Temp\c3912af058\oneetx.exe__
+Answer > __C:\Users\Tammam\AppData\Local\Temp\c3912af058\oneetx.exe__
 
 # Conclusion
 
@@ -190,4 +190,4 @@ This challenge has us using basic Volatility commands to identify the traces a m
 
 # Ressources
 
-(Stormshield CTI - Malware RedLine : d’une extension Chrome à une campagne malveillante d’envergure)[https://www.stormshield.com/fr/actus/malware-redline-extension-chrome-campagne-malveillante-envergure/]
+[Stormshield CTI - Malware RedLine : d’une extension Chrome à une campagne malveillante d’envergure](https://www.stormshield.com/fr/actus/malware-redline-extension-chrome-campagne-malveillante-envergure/)
