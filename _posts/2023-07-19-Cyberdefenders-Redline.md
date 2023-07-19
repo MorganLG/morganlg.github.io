@@ -7,7 +7,7 @@ tags: [volatility]
 
 # Introduction
 
-iWe're given a *.zip* which contains a memory dump in the form of a file named *MemoryDump.mem*. The challenge will need us to work with *Volatility* to retrieve artifacts that will help us identify the malware we're dealing with.
+We're given a *.zip* which contains a memory dump in the form of a file named *MemoryDump.mem*. The challenge will need us to work with *Volatility* to retrieve artifacts that will help us identify the malware we're dealing with.
 
 > With Volatility3, we don't need to specify the profile to decode the memory dump anymore. Volatility guesses it on its own so we can go straight to the point.
 {: .prompt-info}
@@ -15,24 +15,11 @@ iWe're given a *.zip* which contains a memory dump in the form of a file named *
 # Q1 : What is the name of the suspicious process?
 
 We can extract the list of the process that were running as the memory got dumped:
-```console
+```bash
 $ vol -f MemoryDump.mem windows.pslist
-Volatility 3 Framework 2.4.1i
-Progress:  100.00               PDB scanning finished                        
-PID     PPID    ImageFileName   Offset(V)       Threads Handles SessionId       Wow64   CreateTime      ExitTime        File output
-
-4       0       System  0xad8185883180  157     -       N/A     False   2023-05-21 22:27:10.000000      N/A     Disabled
-108     4       Registry        0xad81858f2080  4       -       N/A     False   2023-05-21 22:26:54.000000      N/A     Disabled
-332     4       smss.exe        0xad81860dc040  2       -       N/A     False   2023-05-21 22:27:10.000000      N/A     Disabled
-452     444     csrss.exe       0xad81861cd080  12      -       0       False   2023-05-21 22:27:22.000000      N/A     Disabled
-528     520     csrss.exe       0xad8186f1b140  14      -       1       False   2023-05-21 22:27:25.000000      N/A     Disabled
-552     444     wininit.exe     0xad8186f2b080  1       -       0       False   2023-05-21 22:27:25.000000      N/A     Disabled
-...
-4340    676     VSSVC.exe       0xad818e888080  3       -       0       False   2023-05-21 23:01:06.000000      N/A     Disabled
-7540    824     smartscreen.ex  0xad818e893080  14      -       1       False   2023-05-21 23:02:26.000000      N/A     Disabled
-8920    3580    FTK Imager.exe  0xad818ef81080  20      -       1       False   2023-05-21 23:02:28.000000      N/A     Disabled
-5480    448     oneetx.exe      0xad818d3d6080  6       -       1       True    2023-05-21 23:03:00.000000      N/A     Disabled
 ```
+![Q1 - Volatility pslist](/assets/img/2023-07-19-Cyberdefenders-Redline/q1.png)
+
 Most of the processes are native Windows programs that don't seem suspicious. The last one (*oneetx.exe*) catches our attention. With a quick Google Search, it turns out that it is indeed malicious.
 
 Answer > __oneetx.exe__
@@ -40,9 +27,9 @@ Answer > __oneetx.exe__
 # Q2 : What is the child process name of the suspicious process?
 
 Let's have a clearer view of the processes hierarchy:
-```console
+```shell
 $ vol -f MemoryDump.mem windows.pstree
-olatility 3 Framework 2.4.1
+Volatility 3 Framework 2.4.1
 Progress:  100.00               PDB scanning finished                        
 PID     PPID    ImageFileName   Offset(V)       Threads Handles SessionId       Wow64   CreateTime      ExitTime
 
@@ -142,7 +129,7 @@ Volatility 3 Framework 2.4.1
 
 Offset  Proto   LocalAddr       LocalPort       ForeignAddr     ForeignPort     State   PID     Owner   Created
 ...
-0xad818de4aa20  TCPv4   10.0.85.2       55462   77.91.124[.]20    80      CLOSED  5896    oneetx.exe      2023-05-21 23:01:22.000000
+0xad818de4aa20  TCPv4   10.0.85.2       55462   77.91.124.20    80      CLOSED  5896    oneetx.exe      2023-05-21 23:01:22.000000
 ...
 ```
 The command shows that there were an outbound HTTP connection (port 80) initiated by the program *oneetx.exe*. A quick Google Search confirms that this IP address is known to be malicious.
@@ -159,15 +146,15 @@ Answer > __RedLine Stealer__
 
 Since we can narrow our search to the IP address that we previously found, we can simply search for all strings in the memory dump that contains this IP address. We can also probably use the running *msedge.exe* process to get the history of the HTTP connections.
 ```console
-$ strings MemoryDump.mem | grep http://77.91.124[.]20
-http[:]//77.91.124[.]20/ E
-http[:]//77.91.124[.]20/store/gamel
-http[:]//77.91.124[.]20/ E
-http[:]//77.91.124[.]20/DSC01491/
-http[:]//77.91.124[.]20/DSC01491/
-http[:]//77.91.124[.]20/store/games/index.php
-http[:]//77.91.124[.]20/store/games/index.php
-http[:]//77.91.124[.]20/store/games/index.php
+$ strings MemoryDump.mem | grep http[:]//77.91.124[.]20
+http://77.91.124.20/ E
+http://77.91.124.20/store/gamel
+http://77.91.124.20/ E
+http://77.91.124.20/DSC01491/
+http://77.91.124.20/DSC01491/
+http://77.91.124.20/store/games/index.php
+http://77.91.124.20/store/games/index.php
+http://77.91.124.20/store/games/index.php
 ```
 
 Answer > __http[:]//77.91.124[.]20/store/games/index.php__
