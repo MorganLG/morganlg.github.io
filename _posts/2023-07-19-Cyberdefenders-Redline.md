@@ -18,7 +18,7 @@ We can extract the list of the process that were running as the memory got dumpe
 ```bash
 $ vol -f MemoryDump.mem windows.pslist
 ```
-![Q1 - Volatility pslist](assets/posts_img/2023-07-19-Cyberdefenders-Redline/q1.png)
+![Q1 - Volatility pslist](/assets/posts_img/2023-07-19-Cyberdefenders-Redline/q1.png)
 
 Most of the processes are native Windows programs that don't seem suspicious. The last one (*oneetx.exe*) catches our attention. With a quick Google Search, it turns out that it is indeed malicious.
 
