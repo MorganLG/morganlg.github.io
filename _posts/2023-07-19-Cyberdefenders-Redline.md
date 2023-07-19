@@ -4,6 +4,7 @@ date: 2023-07-19 14:00:00 +0200
 categories: [Forensics]
 tags: [volatility]
 ---
+[Link to the challenge](https://cyberdefenders.org/blueteam-ctf-challenges/106)
 
 # Introduction
 
